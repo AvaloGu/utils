@@ -127,3 +127,44 @@ def draw_points_on_court(
         )
 
     return court
+
+
+def draw_path_on_court(
+    config: TennisCourtConfiguration,
+    paths: List[np.ndarray],
+    color: sv.Color = sv.Color.WHITE,
+    thickness: int = 2,
+    padding: int = 200,
+    scale: float = 0.5,
+    court: Optional[np.ndarray] = None
+) -> np.ndarray:
+   
+    if court is None:
+        court = draw_tennis_court(
+            config=config,
+            padding=padding,
+            scale=scale
+        )
+
+
+    scaled_path = [
+        (
+            int(point[0] * scale) + padding,
+            int(point[1] * scale) + padding
+        )
+        for point in paths
+    ]
+
+    if len(scaled_path) < 2:
+        return court
+
+    for i in range(len(scaled_path) - 1):
+        cv2.line(
+            img=court,
+            pt1=scaled_path[i],
+            pt2=scaled_path[i + 1],
+            color=color.as_bgr(),
+            thickness=thickness
+        )
+
+    return court
